@@ -14,7 +14,7 @@ THANKS!
 
 Show eos-detection in Tensorflow/Serving on Kubernate. 
 
-![Capture of the Web App](capture.png)
+![Capture of the Web App](https://drive.google.com/uc?id=10xartG0QqZbcOyToH3MojrLuka6bga-V&export=download)
 
 Test Slides are provided using Google Drive, click [here](https://drive.google.com/file/d/13lXgS3ZmFv3YtQhQAzb5Iw8Mf2DOkmI5/view)
 

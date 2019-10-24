@@ -5,10 +5,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "next",
-    "now-build": "next build && next export -o dist"
+    "build": "next build",
+    "start": "node server.js",
+    "start-local": "NODE_ENV=production PORT=8080 node server.js"
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
     "fs": "^0.0.1-security",
     "net": "^1.0.2",
     "next": "^8.0.1",

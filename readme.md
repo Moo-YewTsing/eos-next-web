@@ -1,33 +1,23 @@
-# object-detection
+# Web demo for Tensorflow/serving on Kubernate
 
-An API and an app to detect objects on images.
+## ADAPTED FROM
 
-**Deploy on ZEIT Now:**
+**object-detection**:[Demo here](https://object-detection.now.sh)
 
-[![Deploy to ZEIT Now](https://zeit.co/button)](https://zeit.co/new/project?template=lucleray/object-detection)
-
-### 👉 [Demo here](https://object-detection.now.sh)
-
-![Screenshot of the app](screenshot.png)
+An API and an app to detect objects on images. 
 
 If you want to read more about how this was made, [read the detailed article about it on ZEIT's blog](https://zeit.co/blog/serverless-machine-learning).
 
-The repository contains two folders:
+THANKS!
 
-- `/api`, the code of the API taking care of detecting objects on images, powered by Tensorflow
-- `/app`, the code of the frontend website, powered by Next.js
+## Try it
 
+Show eos-detection in Tensorflow/Serving on Kubernate. 
 
-## Development
+![Capture of the Web App](capture.png)
 
-Running the API locally:
+Test Slides are provided using Google Drive, click [here](https://drive.google.com/file/d/13lXgS3ZmFv3YtQhQAzb5Iw8Mf2DOkmI5/view)
 
-```
-yarn --cwd api run dev
-```
+Demo [here](https://eos-detection-dot-eeeooosss.appspot.com)
 
-Running the app locally:
-
-```
-yarn --cwd app run dev
-```
+The Web server is based on Google's App Engine.

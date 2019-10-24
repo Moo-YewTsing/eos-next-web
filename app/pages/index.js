@@ -26,20 +26,20 @@ async function fetchPredict(file, setObjects, setStatus) {
 
     axios.post(`https://cors-anywhere.herokuapp.com/http://${API_URL}:8501/v1/models/eos:predict`, img_data)
     .then((res) => {
-
-      // const result = res.data.predictions[0].detection_scores
       const scores = res.data.predictions[0].detection_scores
       const boxs = res.data.predictions[0].detection_boxes
       const json = []
+      let count = 0
       for (var i = 0; i < scores.length; i++){
           if (scores[i] > 0.3){
-              json.push({'bbox':[{ "x": boxs[i][1]*W, "y": boxs[i][0]*H}, 
+                json.push({'bbox':[{ "x": boxs[i][1]*W, "y": boxs[i][0]*H}, 
                                  { "x": boxs[i][3]*W, "y": boxs[i][2]*H}], 
                       })
+                      count ++
           }
       }
-
       setObjects(json)
+      window.alert(`${count} EOS are found`)
       setStatus('success')
     })
     .catch((error) => {
@@ -86,7 +86,6 @@ export default () => {
             )}
             <div className="padding">
               <h1><i>Eosinophils</i>-Detection</h1>
-
               <h2>Upload an image</h2>
               <Dropzone
                 setStatus={setStatus}

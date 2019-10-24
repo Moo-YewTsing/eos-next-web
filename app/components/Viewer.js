@@ -91,7 +91,6 @@ const Viewer = ({ file, objects, status }) => {
                     fill="none"
                     strokeWidth={2 / scale}
                   />
-
                 </>
               )
             })}

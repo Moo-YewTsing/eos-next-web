@@ -39,7 +39,7 @@ async function fetchPredict(file, setObjects, setStatus) {
           }
       }
       setObjects(json)
-      window.alert(`${count} EOS are found`)
+      window.alert(`I Found ${count} EOS`)
       setStatus('success')
     })
     .catch((error) => {

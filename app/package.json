@@ -8,10 +8,15 @@
     "now-build": "next build && next export -o dist"
   },
   "dependencies": {
+    "axios": "^0.19.0",
+    "fs": "^0.0.1-security",
+    "net": "^1.0.2",
     "next": "^8.0.1",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
-    "react-dropzone": "^8.1.0"
+    "react-dropzone": "^8.1.0",
+    "request": "^2.88.0",
+    "tls": "^0.0.1"
   },
   "devDependencies": {
     "dotenv": "^6.2.0"

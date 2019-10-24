@@ -9,7 +9,7 @@ const Dropzone = ({
 }) => (
   <>
     <ReactDropzone
-      accept="image/jpeg,image/png"
+      accept="image/jpeg,image/jpg"
       maxSize={5 * 1024 * 1024}
       multiple={false}
       onDrop={(acceptedFiles, rejectedFiles) => {
@@ -35,7 +35,8 @@ const Dropzone = ({
           <div {...getRootProps()} className="dropzone">
             <input {...getInputProps()} />
             <p>Drop an image here</p>
-            <p>(png/jpeg)</p>
+            <p>(jpg/jpeg)</p>
+            <p>(size : 960 * 720)</p>
           </div>
         )
       }}

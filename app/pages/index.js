@@ -4,181 +4,50 @@ import Viewer from '../components/Viewer'
 import Dropzone from '../components/Dropzone'
 import Head from 'next/head'
 
-const API_URL = process.env.API_URL
+const API_URL = '34.70.0.203'
+const axios = require('axios')
+
+const W = 960
+const H = 720
 
 async function fetchPredict(file, setObjects, setStatus) {
   setStatus('loading')
   window.scrollTo(0, 0)
   setObjects([])
-  const res = await fetch(`${API_URL}/predict`, {
-    method: 'POST',
-    body: file
-  })
-  if (!res.ok) {
-    setStatus('error')
-    return
-  }
-  const json = await res.json()
-  setObjects(json)
-  setStatus('success')
-}
 
-async function fetchWarm() {
-  await fetch(`${API_URL}/warm`)
-}
+  let reader = new FileReader(); 
+  reader.onload = function () {
+  let b64 = reader.result.split(',')[1].toString('utf8');
+  
+  const img_data = { 'instances': [
+                    {'image_bytes': {'b64': b64},
+                     'key': 'eos'}
+            ] }
 
-function shuffle(arr) {
-  const a = [...arr]
-  var j, x, i
-  for (i = a.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1))
-    x = a[i]
-    a[i] = a[j]
-    a[j] = x
-  }
-  return a
-}
+    axios.post(`https://cors-anywhere.herokuapp.com/http://${API_URL}:8501/v1/models/eos:predict`, img_data)
+    .then((res) => {
 
-const ExampleImage = ({
-  src,
-  topic,
-  setStatus,
-  setFile,
-  setObjects,
-  fetchPredict
-}) => {
-  const [img, setImg] = useState()
+      // const result = res.data.predictions[0].detection_scores
+      const scores = res.data.predictions[0].detection_scores
+      const boxs = res.data.predictions[0].detection_boxes
+      const json = []
+      for (var i = 0; i < scores.length; i++){
+          if (scores[i] > 0.3){
+              json.push({'bbox':[{ "x": boxs[i][1]*W, "y": boxs[i][0]*H}, 
+                                 { "x": boxs[i][3]*W, "y": boxs[i][2]*H}], 
+                      })
+          }
+      }
 
-  useEffect(() => {
-    fetch(src)
-      .then(res => res.blob())
-      .then(blob => {
-        blob.src = URL.createObjectURL(blob)
-        setImg(blob)
-      })
-  }, [])
-
-  return (
-    <div className="sample-img">
-      {img ? (
-        <div className="img-frame show">
-          <img
-            src={img.src}
-            alt={`A ${topic}`}
-            onClick={() => {
-              setFile(img)
-              fetchPredict(img, setObjects, setStatus)
-            }}
-          />
-        </div>
-      ) : (
-        <div className="img-frame" />
-      )}
-      <style jsx>{`
-        .sample-img {
-          position: relative;
-          width: 190px;
-          height: 190px;
-          float: left;
-        }
-        .img-frame {
-          margin-right: 10px;
-          margin-bottom: 15px;
-          padding: 12px;
-          border-radius: 5px;
-          border: 1px solid #ddd;
-          box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.1);
-          opacity: 0;
-          transition: 0.7s ease-in;
-          cursor: pointer;
-        }
-        .img-frame.show {
-          opacity: 1;
-        }
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center;
-        }
-      `}</style>
-    </div>
-  )
-}
-
-const TOPICS = [
-  'cat',
-  'banana',
-  'plane',
-  'guitar',
-  'bird',
-  'car',
-  'bus',
-  'horse',
-  'surfboard',
-  'wine',
-  'pizza',
-  'chair',
-  'traffic light',
-  'boat',
-  'bench',
-  'bear',
-  'elephant',
-  'skateboard',
-  'sandwich',
-  'apple',
-  'hot dog',
-  'donut',
-  'oven',
-  'clock',
-  'teddy bear',
-  'toothbrush',
-  'suit case'
-]
-
-const Examples = ({ topics, ...props }) => {
-  return (
-    <div>
-      {topics.slice(0, 6).map(topic => (
-        <ExampleImage
-          key={topic}
-          src={`https://source.unsplash.com/500x500/?${topic}`}
-          topic={topic}
-          {...props}
-        />
-      ))}
-      <div className="float-reset" />
-      <style jsx>{`
-        .float-reset {
-          clear: both;
-          margin-bottom: 2em;
-        }
-      `}</style>
-    </div>
-  )
-}
-
-const APIUsage = () => {
-  return (
-    <pre>
-      <code>{`curl -X POST https://object-detection.now.sh/api/predict \\
-  -H 'content-type: image/jpeg' \\
-  --data-binary "@my_image.jpeg"`}</code>
-      <style jsx>{`
-        pre {
-          color: rgb(214, 222, 235);
-          line-height: 1.45;
-          font-size: 1.1em;
-          font-family: Hack, monospace;
-          background: rgb(1, 22, 39);
-          padding: 16px;
-          overflow: auto;
-          border-radius: 3px;
-          margin-bottom: 2em;
-        }
-      `}</style>
-    </pre>
-  )
+      setObjects(json)
+      setStatus('success')
+    })
+    .catch((error) => {
+      setStatus('error')
+      console.error(error)
+    })
+    };
+  reader.readAsDataURL(file);
 }
 
 export default () => {
@@ -186,19 +55,15 @@ export default () => {
   const [status, setStatus] = useState('waiting')
   const [error, setError] = useState(null)
   const [objects, setObjects] = useState([])
-  const [topics, setTopics] = useState(shuffle(TOPICS))
-
-  useEffect(() => {
-    fetchWarm()
-  }, [])
 
   return (
     <>
       <Head>
-        <title>Object Detection - An API to detect objects on images</title>
+        <title>Eosinophils Detection - An Demo to detect and count EOS on slides</title>
         <meta
           name="description"
-          content="An API to detect objects on images using tensorflow-js and Zeit Now"
+          content="An Demo to detect and count EOS on slides.
+                  Adpated from: An API to detect objects on images using tensorflow-js and Zeit Now"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -220,7 +85,7 @@ export default () => {
               </div>
             )}
             <div className="padding">
-              <h1>Object-Detection</h1>
+              <h1><i>Eosinophils</i>-Detection</h1>
 
               <h2>Upload an image</h2>
               <Dropzone
@@ -231,42 +96,14 @@ export default () => {
                 setError={setError}
               />
 
-              <h2>
-                Or choose an example image (
-                <button
-                  className="link"
-                  onClick={() => setTopics(shuffle(TOPICS))}
-                >
-                  refresh?
-                </button>
-                )
-              </h2>
-              <Examples
-                topics={topics}
-                setFile={setFile}
-                setStatus={setStatus}
-                setObjects={setObjects}
-                fetchPredict={fetchPredict}
-              />
-
-              <h2>API Usage</h2>
-              <APIUsage />
-
-              <h2>How does it work?</h2>
-
               <p className="mb">
-                You can read more on{' '}
-                <a href="https://zeit.co/blog/serverless-machine-learning">
-                  the dedicated article on ZEIT's blog
-                </a>{' '}
-                or in the code{' '}
+                
+                This web-page is adpated from {' '}
                 <a href="https://github.com/lucleray/object-detection">
-                  available on Github.
+                  object-detection 
                 </a>
-              </p>
-
-              <p className="mb">
-                Made by{' '}
+                {' '}created by
+                {' '}
                 <a
                   href="https://twitter.com/lucleray"
                   target="_blank"
@@ -274,8 +111,8 @@ export default () => {
                 >
                   @lucleray
                 </a>
-                .
               </p>
+
             </div>
           </>
         }

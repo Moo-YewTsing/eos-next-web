@@ -91,12 +91,7 @@ const Viewer = ({ file, objects, status }) => {
                     fill="none"
                     strokeWidth={2 / scale}
                   />
-                  <LabelBox x={x} y={y} scale={scale}>
-                    {obj.class}{' '}
-                    <span style={{ opacity: 0.6 }}>
-                      {Math.round(obj.score * 100)}%
-                    </span>
-                  </LabelBox>
+
                 </>
               )
             })}

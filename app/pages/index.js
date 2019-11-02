@@ -4,7 +4,8 @@ import Viewer from '../components/Viewer'
 import Dropzone from '../components/Dropzone'
 import Head from 'next/head'
 
-const API_URL = '34.70.0.203'
+const interface1 = 'https://us-central1-eeeooosss.cloudfunctions.net/interface1'
+
 const axios = require('axios')
 
 const W = 960
@@ -23,9 +24,11 @@ async function fetchPredict(file, setObjects, setStatus) {
                     {'image_bytes': {'b64': b64},
                      'key': 'eos'}
             ] }
-
-    axios.post(`https://cors-anywhere.herokuapp.com/http://${API_URL}:8501/v1/models/eos:predict`, img_data)
+   // const url = `https://cors-anywhere.herokuapp.com/https://myeos-xmefyx46rq-uc.a.run.app:8080/v1/models/eos:predict`
+   const url = `https://cors-anywhere.herokuapp.com/${interface1}`
+    axios.post(url, img_data)
     .then((res) => {
+        console.log(res)
       const scores = res.data.predictions[0].detection_scores
       const boxs = res.data.predictions[0].detection_boxes
       const json = []
